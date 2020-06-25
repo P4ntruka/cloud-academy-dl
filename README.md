@@ -1,5 +1,5 @@
-#CloudAcademy Downloader
-This python script was built to download videos from Cloud Academy only for personal offline purpose and self-study.
+# CloudAcademy Downloader
+This python script was built to download videos and subtitles from Cloud Academy only for personal offline purpose and self-study.
 
 This project was inspired on this repo: https://github.com/josefeg/cloudacademy-dl
 
@@ -20,9 +20,9 @@ pip install -r requirements.txt
 ```sh
 cloud-academy-dl.py <url course> --cookie=file.txt 
 ```
-The **<url course>** must be the full qualifier URL from the course, when you see all video list in the left side of player.
+The **url** must be the full qualifier from the course, when you see all video list in the left side of the player.
 the **--cookie** argument must be a text file with your cookies, for that, you must loggin on cloud academy and then make right click to inspect the website.
-In the Network tab look for any request to 'cloudacademy.com' and GET method, copy all **Request Header** and save it into a text file, e.g:
+In the Network tab look for any request to 'cloudacademy.com' with the GET method, copy all **Request Header** and save it into a text file, e.g:
 
 ```
 :authority: cloudacademy.com
@@ -40,7 +40,7 @@ sec-fetch-mode: cors
 sec-fetch-site: same-origin
 user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36
 ```
-#optional arguments
+# Optional arguments
 ```
 The optional command line arguments for the script are:
 
@@ -54,6 +54,6 @@ The optional command line arguments for the script are:
 ```
 
 
-#Referential image of the script
+# Downloading videos:
 
 [![Capture.png](https://i.postimg.cc/1RVTZ9hc/cloud-academy-dl.png)](https://postimg.cc/ThGQVvPp)
