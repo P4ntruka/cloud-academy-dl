@@ -64,10 +64,7 @@ def get_course_contents(course_url, cookies, output_dir, video_res):
                     prefix = '0'+str(index+1)+'_'
                 else:
                     prefix = str(index+1)+'_'
-                title_video =  re.findall(r'([a-zA-Z0-9 -]*)', content['course']['stepMap'][item]['data']['title'])[0]
-                subs_count = len(content['course']['stepMap'][item]['data']['player']['subtitles'])
-                if(subs_count == 1):
-                    subs_url = content['course']['stepMap'][item]['data']['player']['subtitles'][0]['url']
+                title_video = str(content['course']['stepMap'][item]['data']['title']).strip()
 
                 for sources in content['course']['stepMap'][item]['data']['player']['sources']:
                     if sources['quality'] == resolution and sources['type'] == 'video\u002Fmp4':
@@ -77,7 +74,8 @@ def get_course_contents(course_url, cookies, output_dir, video_res):
                         subs_name_file = path + title_video + ".vtt"
                         os.makedirs(path, exist_ok=True)
                         download_file(video_url, video_file)
-                        if (subs_count == 1):
+                        if (len(content['course']['stepMap'][item]['data']['player']['subtitles']) == 1):
+                            subs_url = content['course']['stepMap'][item]['data']['player']['subtitles'][0]['url']
                             download_file(subs_url, subs_name_file)
     except KeyError as error:
         print(error)
