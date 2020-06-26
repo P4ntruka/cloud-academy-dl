@@ -22,7 +22,7 @@ cloud-academy-dl.py <url course> --cookie=file.txt
 ```
 The **url** must be the full qualifier from the course, when you see all video list in the left side of the player.
 the **--cookie** argument must be a text file with your cookies, for that, you must loggin on cloud academy and then make right click to inspect the website.
-In the Network tab look for any request to 'cloudacademy.com' with the GET method, copy all **Request Header** and save it into a text file, e.g:
+In the **Network tab** look for a request with **'config'** name in the left side of requests, select all **request header** and copy that to text file. **That request header must have an authorization and cookie field with no null values**, e.g:
 
 ```
 :authority: cloudacademy.com
@@ -32,8 +32,8 @@ In the Network tab look for any request to 'cloudacademy.com' with the GET metho
 accept: application/json
 accept-encoding: gzip, deflate, br
 accept-language: *
-authorization: Bearer eyJ
-cookie: _gcl_au=
+authorization: Bearer eyJ..........
+cookie: _gcl_au=123abc....
 referer: https://cloudacademy.com/
 sec-fetch-dest: empty
 sec-fetch-mode: cors
