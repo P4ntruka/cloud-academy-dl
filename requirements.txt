@@ -3,3 +3,4 @@ tqdm>=4.46.1
 beautifulsoup4>=4.5.3
 colorama>=0.4.1
 docopt>=0.6.2
+lxml>=4.4.1
