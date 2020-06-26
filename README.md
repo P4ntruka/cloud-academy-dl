@@ -24,6 +24,8 @@ The **url** must be the full qualifier from the course, when you see all video l
 the **--cookie** argument must be a text file with your cookies, for that, you must loggin on cloud academy and then make right click to inspect the website.
 In the **Network tab** look for a request with **'config'** name in the left side of requests, select all **request header** and copy that to text file. **That request header must have an authorization and cookie field with no null values**, e.g:
 
+__`"You only need generate the request header file once, then can be used multiple time to download until your session expired from server."`__
+
 ```
 :authority: cloudacademy.com
 :method: GET
