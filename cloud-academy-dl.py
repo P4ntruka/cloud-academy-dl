@@ -28,14 +28,17 @@ from docopt import docopt
 import platform
 import tqdm
 
+splitter = '/'
+
 def get_os_platform():
-    global formater
     os_platform = platform.system()
-    if os_platform == 'Windows':
-        formater = '\\'
-    if os_platform in ['Linux','Darwin']:
-        formater = '/'
-    return formater
+    return os_platform
+
+def remove_special_character(text):
+    'applicable to windows platform'
+    characters = ["\\","/","|","<",">",":","?","*"]
+    new_text = ''.join(e for e in text if e not in characters)
+    return new_text
 
 def fetch_videos(course_url, cookies):
     response = requests.get(course_url, cookies=cookies)
@@ -47,7 +50,8 @@ def fetch_videos(course_url, cookies):
     return data
 
 def get_course_contents(course_url, cookies, output_dir, video_res):
-    folder_sep = get_os_platform()
+    folder_sep = splitter
+    platform = get_os_platform()
     data = fetch_videos(course_url, cookies)
     try:
         course_title = data['course']['includedIn'][0]['title']
@@ -66,14 +70,27 @@ def get_course_contents(course_url, cookies, output_dir, video_res):
                     prefix = '0'+str(index+1)+'_'
                 else:
                     prefix = str(index+1)+'_'
-                video_title = str(content['course']['stepMap'][item]['data']['title']).strip()
+
+                if platform in ['Linux', 'Darwin']:
+                    video_title = str(content['course']['stepMap'][item]['data']['title']).strip()
+                else: #Windows
+                    video_title = remove_special_character(str(content['course']['stepMap'][item]['data']['title']).strip())
 
                 for sources in content['course']['stepMap'][item]['data']['player']['sources']:
                     if sources['quality'] == resolution and sources['type'] == 'video\u002Fmp4':
                         video_url = sources['src']
-                        destination_path = output_dir +folder_sep + course_title + folder_sep + module + folder_sep +  prefix+video_title + folder_sep
+
+                        if platform in ['Linux', 'Darwin']:
+                            destination_path = output_dir +folder_sep + course_title + folder_sep + module + folder_sep\
+                                               +  prefix+video_title + folder_sep
+                        else: #Windows
+                            destination_path = output_dir + folder_sep + remove_special_character(course_title) \
+                                               + folder_sep + remove_special_character(module) + folder_sep \
+                                               + remove_special_character(prefix+video_title) + folder_sep
+
                         video_file_name = destination_path + video_title + ".mp4"
                         subs_file_name = destination_path + video_title + ".vtt"
+
                         os.makedirs(destination_path, exist_ok=True)
                         request_file(video_url, video_file_name)
                         if (len(content['course']['stepMap'][item]['data']['player']['subtitles']) == 1):
@@ -104,7 +121,6 @@ def request_file(url, dest_filaneme):
 
 
 def download_file(response, content_size, destination_file_name):
-    splitter = get_os_platform()
     total_downloaded = 0
     title = destination_file_name.rsplit(splitter, 1)[1]
     screen_file_name = (str(title[:27]).strip() + '....' + str(title[-27:]).strip()) if len(title) > 58 else title
@@ -124,6 +140,10 @@ def download_file(response, content_size, destination_file_name):
                         f.write(chunk)
                 except requests.exceptions.StreamConsumedError:
                     print("❌ Error while downloading file, trying to download it again..")
+                except requests.exceptions.ChunkedEncodingError:
+                    print("❌ The server declared chunked encoding but sent an invalid chunk. Trying to download it again..")
+
+
 
             if (total_downloaded == content_size):
                 progress.set_description('✅ File ready {file:<60}'.format(file='"' + screen_file_name + '"'))
@@ -161,3 +181,4 @@ def main():
     parse_cookie_file(course_url, video_res, output_dir, cookiefile)
 if __name__ == '__main__':
     main()
+
