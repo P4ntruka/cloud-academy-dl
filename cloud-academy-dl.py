@@ -40,7 +40,7 @@ def remove_special_character(text):
     new_text = ''.join(e for e in text if e not in characters)
     return new_text
 
-def fetch_videos(course_url, cookies):
+def fetch_videos_info(course_url, cookies):
     response = requests.get(course_url, cookies=cookies)
     soup = BeautifulSoup(response.text, 'lxml')
     script = soup.find('script', text=re.compile('window\.__INITIAL_STATE__ '))
@@ -52,7 +52,7 @@ def fetch_videos(course_url, cookies):
 def get_course_contents(course_url, cookies, output_dir, video_res):
     folder_sep = splitter
     platform = get_os_platform()
-    data = fetch_videos(course_url, cookies)
+    data = fetch_videos_info(course_url, cookies)
     try:
         course_title = data['course']['includedIn'][0]['title']
         module = data['course']['entity']['title']
@@ -63,7 +63,7 @@ def get_course_contents(course_url, cookies, output_dir, video_res):
 
         for index, modules in enumerate(data['course']['entity']['steps']):
             url = url_spliter[0] + '/' + data['course']['entity']['steps'][index]['slug'] + '/' + url_spliter[2]
-            content = fetch_videos(url, cookies)
+            content = fetch_videos_info(url, cookies)
 
             for item in content['course']['stepMap']:
                 if index < 9:
@@ -72,7 +72,7 @@ def get_course_contents(course_url, cookies, output_dir, video_res):
                     prefix = str(index+1)+'_'
 
                 if platform in ['Linux', 'Darwin']:
-                    video_title = str(content['course']['stepMap'][item]['data']['title']).strip()
+                    video_title = str(content['course']['stepMap'][item]['data']['title']).strip().replace('/','-')
                 else: #Windows
                     video_title = remove_special_character(str(content['course']['stepMap'][item]['data']['title']).strip())
 
@@ -86,7 +86,7 @@ def get_course_contents(course_url, cookies, output_dir, video_res):
                         else: #Windows
                             destination_path = output_dir + folder_sep + remove_special_character(course_title) \
                                                + folder_sep + remove_special_character(module) + folder_sep \
-                                               + remove_special_character(prefix+video_title) + folder_sep
+                                               + prefix+video_title + folder_sep
 
                         video_file_name = destination_path + video_title + ".mp4"
                         subs_file_name = destination_path + video_title + ".vtt"
@@ -98,6 +98,7 @@ def get_course_contents(course_url, cookies, output_dir, video_res):
                             request_file(subs_url, subs_file_name)
     except KeyError as error:
         print(error)
+        exit(1)
 
 
 
@@ -143,8 +144,6 @@ def download_file(response, content_size, destination_file_name):
                 except requests.exceptions.ChunkedEncodingError:
                     print("❌ The server declared chunked encoding but sent an invalid chunk. Trying to download it again..")
 
-
-
             if (total_downloaded == content_size):
                 progress.set_description('✅ File ready {file:<60}'.format(file='"' + screen_file_name + '"'))
                 progress.bar_format = "{desc} %s{percentage:3.0f}%s %s|%s{bar:50}{r_bar}" \
@@ -152,7 +151,7 @@ def download_file(response, content_size, destination_file_name):
                 progress.close()
                 break
 
-def parse_cookie_file(course_url, video_res, output_dir, cookiefile):
+def parse_cookie_file(cookiefile):
     'find "config" request on XHR'
     f_in = open(cookiefile)
     requests_header = '\n'.join([line for line in (l.strip() for l in f_in) if line])
@@ -161,8 +160,7 @@ def parse_cookie_file(course_url, video_res, output_dir, cookiefile):
     cookies = re.findall(r'cookie:\s(.*)', requests_header)
     if auth != None and cookies != None:
         auth_cookies = {'authorization': auth[0], 'cookie': cookies[0]}
-        get_course_contents(course_url, auth_cookies, output_dir, video_res)
-        print('Done!')
+        return auth_cookies
     else:
         print("Bad cookie file, check again")
         exit(1)
@@ -178,7 +176,8 @@ def main():
     cookiefile = args['--cookie']
     course_url = args['<url>']
 
-    parse_cookie_file(course_url, video_res, output_dir, cookiefile)
+    get_course_contents(course_url, parse_cookie_file(cookiefile), output_dir, video_res)
+    print("Done!")
 if __name__ == '__main__':
     main()
 
