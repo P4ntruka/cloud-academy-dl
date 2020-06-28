@@ -67,7 +67,7 @@ The optional command line arguments for the script are:
 
 # Downloading videos & new features
 
-If error appear while download, you can re run the script to check your downloaded files and if they're not corrupted.\
+If error appear while download, you can run again the script to check your downloaded files and if they're not corrupted.\
 If any file is corrupted, the script will start downloading again from that point.
 
 ![corrupted_file](https://user-images.githubusercontent.com/36051334/85954604-ac6e9900-b946-11ea-8130-fb7a4c693615.png)
