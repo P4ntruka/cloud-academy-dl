@@ -158,11 +158,11 @@ def parse_cookie_file(cookiefile):
     f_in.close()
     auth = re.findall(r'authorization:\sBearer\s(.*)', requests_header)
     cookies = re.findall(r'cookie:\s(.*)', requests_header)
-    if auth != None and cookies != None:
+    if len(auth) == 1 and len(cookies) == 1:
         auth_cookies = {'authorization': auth[0], 'cookie': cookies[0]}
         return auth_cookies
     else:
-        print("Bad cookie file, check again")
+        print("Bad cookie file, check the 'authorization: ' and 'cookie :' fields in your text file")
         exit(1)
 
 
