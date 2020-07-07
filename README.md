@@ -11,7 +11,7 @@ This script requires Python 3 and a CloudAcademy account.
 Tested on Linux, Mac and Windows platform.\
 First clone this repository in any directory and then run the requirements.txt
 ```
-$ git clone https://github.com/P4ntruka/cloud-academy-dl.git
+$ git clone https://github.com/P4ntruka/cloudacademy-dl.git
 Cloning into 'cloud-academy-dl'...
 
 $ cd cloud-academy-dl
