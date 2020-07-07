@@ -12,9 +12,9 @@ Tested on Linux, Mac and Windows platform.\
 First clone this repository in any directory and then run the requirements.txt
 ```
 $ git clone https://github.com/P4ntruka/cloudacademy-dl.git
-Cloning into 'cloud-academy-dl'...
+Cloning into 'cloudacademy-dl'...
 
-$ cd cloud-academy-dl
+$ cd cloudacademy-dl
 $ pip install -r requirements.txt
 ```
 
